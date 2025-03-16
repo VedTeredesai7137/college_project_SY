@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with {{ other_user.username }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0b141a;
+            margin: 0;
+            padding: 0;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            max-width: 100%;
+            height: 90vh;
+            background-color: #202c33;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-header {
+            background-color: #1f2c34;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.2em;
+            color: white;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #b1c3cc;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #0b141a;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1em;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            background-color: #056162;
+            align-self: flex-end;
+            color: white;
+        }
+
+        .received {
+            background-color: #202c33;
+            align-self: flex-start;
+            color: #d1d7db;
+        }
+
+        .message-content {
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .message-form {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #1f2c34;
+            background-color: #202c33;
+        }
+
+        .message-form textarea {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            resize: none;
+            background-color: #2a3942;
+            color: white;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            margin-left: 10px;
+            background-color: #056162;
+            color: white;
+            cursor: pointer;
+        }
+
+        .send-button:hover {
+            background-color: #075e54;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat with {{ other_user.username }}</h2>
+            <a href="{% url 'chat_index' %}" class="back-link">← Back to Users</a>
+        </div>
+
+        <div class="messages" id="messages">
+            {% for message in messages %}
+                <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+                    <div class="message-content">
+                        {{ message.content }}
+                    </div>
+                    <div class="message-time">
+                        {{ message.timestamp|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" class="message-form">
+            {% csrf_token %}
+            {{ form.content }}
+            <button type="submit" class="send-button">Send</button>
+        </form>
+    </div>
+
+    <script>
+        // Scroll to bottom of messages
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Scroll on page load
+        scrollToBottom();
+
+        // Function to format date
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(new Date(date));
+        }
+
+        // Function to add new message to the chat
+        function addMessage(message, isSent) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${message.content}
+                </div>
+                <div class="message-time">
+                    ${formatDate(message.timestamp)}
+                </div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Check for new messages every 3 seconds
+        setInterval(function() {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newMessages = doc.getElementById('messages').innerHTML;
+                    document.getElementById('messages').innerHTML = newMessages;
+                });
+        }, 3000);
+
+        // Handle form submission
+        document.querySelector('.message-form').addEventListener('submit', function(e) {
+            const input = document.querySelector('.message-input');
+            if (!input.value.trim()) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #1AB79D;
+        --secondary-color: #EE4962;
+        --background-color: #ffffff;
+        --text-color: #333333;
+        --card-background: #f8f9fa;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --transition-speed: 0.3s;
+    }
+
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    h1 {
+        color: var(--primary-color);
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 50px;
+        height: 3px;
+        background-color: var(--secondary-color);
+        transform: translateX(-50%);
+        transition: width var(--transition-speed) ease;
+    }
+
+    h1:hover::after {
+        width: 100px;
+    }
+
+    .search-form {
+        margin-bottom: 3rem;
+    }
+
+    .search-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .search-input {
+        flex: 0 1 60%;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 25px;
+        outline: none;
+        transition: box-shadow var(--transition-speed) ease;
+    }
+
+    .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(26, 183, 157, 0.3);
+    }
+
+    .search-button {
+        flex: 0 1 15%;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color var(--transition-speed) ease;
+    }
+
+    .search-button:hover {
+        background-color: #148f77;
+    }
+
+    .filter-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .filter-select {
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 25px;
+        outline: none;
+        flex: 1;
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    .notes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .card {
+        background-color: var(--card-background);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px var(--shadow-color);
+        transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px var(--shadow-color);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .pdf-icon {
+        color: var(--secondary-color);
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        color: #000000;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .card-text {
+        margin-bottom: 1.5rem;
+    }
+
+    .highlight {
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: all var(--transition-speed) ease;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #148f77;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #d63447;
+        transform: translateY(-2px);
+    }
+
+    .no-notes {
+        text-align: center;
+        color: var(--secondary-color);
+        font-style: italic;
+        grid-column: 1 / -1;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .search-container {
+            flex-direction: column;
+        }
+
+        .search-input,
+        .search-button {
+            width: 100%;
+        }
+
+        .filter-container {
+            flex-direction: column;
+        }
+
+        .filter-select {
+            max-width: 100%;
+        }
+    }
+</style>
+<div class="container">
+    <h1>View Notes</h1>
+
+    <!-- Search & Filter Form -->
+    <form method="GET" action="{% url 'ViewNotes' %}" class="search-form">
+        <!-- Search Box and Button -->
+        <div class="search-container">
+            <input type="text" name="q" placeholder="Search by subject or name" value="{{ request.GET.q }}" class="search-input">
+            <button type="submit" class="search-button">Search</button>
+        </div>
+
+        <!-- Filters Container -->
+        <div class="filter-container">
+            <!-- Subject Filter -->
+            <select name="subject" class="filter-select">
+                <option value="">-- Select Subject --</option>
+                <option value="mathematics" {% if request.GET.subject == "mathematics" %}selected{% endif %}>Mathematics</option>
+                <option value="html" {% if request.GET.subject == "html" %}selected{% endif %}>HTML</option>
+                <option value="Java" {% if request.GET.subject == "Java" %}selected{% endif %}>Java</option>
+                <option value="Biology" {% if request.GET.subject == "Biology" %}selected{% endif %}>Biology</option>
+                <option value="Computer Science" {% if request.GET.subject == "Computer Science" %}selected{% endif %}>Computer Science</option>
+            </select>
+
+            <!-- Day Dropdown -->
+            <select name="day_published" class="filter-select">
+                <option value="">-- Select Date --</option>
+                {% for day in days_list %}
+                    <option value="{{ day }}" {% if request.GET.day_published == day %}selected{% endif %}>
+                        {{ day }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <!-- Month Dropdown -->
+            <select name="month_published" class="filter-select">
+                <option value="">-- Select Month --</option>
+                {% for month in months_list %}
+                    <option value="{{ month }}" {% if request.GET.month_published == month %}selected{% endif %}>
+                        {{ month }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <!-- Year Dropdown -->
+            <select name="year_published" class="filter-select">
+                <option value="">-- Select Year --</option>
+                {% for year in years_list %}
+                    <option value="{{ year }}" {% if request.GET.year_published == year %}selected{% endif %}>
+                        {{ year }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <!-- Display Notes -->
+    <div class="notes-grid">
+        {% for pdf_file in pdf_files %}
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-file-pdf pdf-icon"></i>
+                <h5 class="card-title">{{ pdf_file.name }}</h5>
+                <p class="card-text">
+                    <span class="highlight">Subject:</span> {{ pdf_file.subject }}<br>
+                    <span class="highlight">Published Date:</span>
+                    {% if pdf_file.year_published %}
+                        {% if pdf_file.day_published and pdf_file.month_published %}
+                            {{ pdf_file.day_published }} {{ pdf_file.month_published }} {{ pdf_file.year_published }}
+                        {% else %}
+                            {{ pdf_file.year_published }} <span class="highlight">(Day & Month Not Provided)</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="highlight">Year Not Available</span>
+                    {% endif %}
+                </p>
+                <a href="{{ pdf_file.file.url }}" class="btn btn-primary" download>Download</a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-notes">No notes found matching your search.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

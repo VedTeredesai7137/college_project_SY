@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A comprehensive demo of HTML tags">
+    <title>HTML Tags and Attributes Demo</title>
+</head>
+<body>
+    <header>
+        <h1>HTML Tags and Attributes Demo</h1>
+        <nav>
+            <a href="#text">Text</a>
+            <a href="#lists">Lists</a>
+            <a href="#media">Media</a>
+            <a href="#forms">Forms</a>
+            <a href="#tables">Tables</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="text">
+            <h2>Text Section</h2>
+            <span style="color: blue;">Blue Text Example</span>
+            <pre><code>
+                Sample Code Block
+            </code></pre>
+        </section>
+
+        <section id="media" class="media-section">
+            <h2>Media Section</h2>
+            <img src="/api/placeholder/400/300" alt="Placeholder Image">
+            
+            <video width="400" controls>
+                <source src="#" type="video/mp4">
+                <track kind="subtitles" src="#" label="English">
+            </video>
+
+            <canvas id="myCanvas" width="200" height="100" style="border:1px solid #000;"></canvas>
+        </section>
+
+        <section id="forms">
+            <h2>Forms Section</h2>
+            <form action="#" method="POST" enctype="multipart/form-data">
+                <fieldset>
+                    <legend>Personal Info</legend>
+                    
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone">
+
+                    <label for="birthdate">Birthday:</label>
+                    <input type="date" id="birthdate" name="birthdate">
+
+                    <label for="color">Color:</label>
+                    <input type="color" id="color" name="color">
+
+                    <label for="satisfaction">Satisfaction:</label>
+                    <input type="range" id="satisfaction" name="satisfaction" min="0" max="10">
+
+                    <label for="file">File:</label>
+                    <input type="file" id="file" name="file">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Additional Info</legend>
+                    
+                    <label for="country">Country:</label>
+                    <select id="country" name="country">
+                        <optgroup label="North America">
+                            <option value="us">United States</option>
+                            <option value="ca">Canada</option>
+                        </optgroup>
+                        <optgroup label="Europe">
+                            <option value="uk">United Kingdom</option>
+                            <option value="fr">France</option>
+                        </optgroup>
+                    </select>
+
+                    <label for="bio">Bio:</label>
+                    <textarea id="bio" name="bio" rows="4"></textarea>
+
+                    <label for="coding">
+                        <input type="checkbox" id="coding" name="interests" value="coding">
+                        Coding
+                    </label>
+
+                    <label for="reading">
+                        <input type="checkbox" id="reading" name="interests" value="reading">
+                        Reading
+                    </label>
+
+                    <label for="male">
+                        <input type="radio" id="male" name="gender" value="male">
+                        Male
+                    </label>
+
+                    <label for="female">
+                        <input type="radio" id="female" name="gender" value="female">
+                        Female
+                    </label>
+                </fieldset>
+
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </form>
+        </section>
+
+        <section id="tables">
+            <h2>Tables Section</h2>
+            <table>
+                <colgroup>
+                    <col style="background-color: #f4f4f4">
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Header 1</th>
+                        <th>Header 2</th>
+                        <th>Header 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">Spanning Cell</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <dialog id="myDialog">
+            Dialog Content
+            <button onclick="this.parentElement.close()">Close</button>
+        </dialog>
+        <button onclick="document.getElementById('myDialog').show()">Open Dialog</button>
+    </main>
+
+    <div class="clearfix"></div>
+
+    <footer>
+        <p>Footer Content</p>
+    </footer>
+</body>
+</html>

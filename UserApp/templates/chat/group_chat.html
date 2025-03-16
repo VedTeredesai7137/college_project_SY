@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ group.name }} - Group Chat</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0b141a;
+            margin: 0;
+            padding: 0;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            max-width: 100%;
+            height: 90vh;
+            background-color: #202c33;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-header {
+            background-color: #1f2c34;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .group-info {
+            background-color: #2a3942;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px;
+            color: #b1c3cc;
+        }
+
+        .participants-list {
+            font-size: 0.9em;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1em;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            background-color: #056162;
+            align-self: flex-end;
+            color: white;
+        }
+
+        .received {
+            background-color: #202c33;
+            align-self: flex-start;
+            color: #d1d7db;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .message-form {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #1f2c34;
+            background-color: #202c33;
+        }
+
+        .message-form textarea {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            resize: none;
+            background-color: #2a3942;
+            color: white;
+        }
+
+        .send-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            margin-left: 10px;
+            background-color: #056162;
+            color: white;
+            cursor: pointer;
+        }
+
+        .send-button:hover {
+            background-color: #075e54;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #b1c3cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            {{ chat_room.name }}
+        </div>
+
+        <div class="group-info">
+            <div class="participants-list">
+                Participants: {{ chat_room.participants.all|join:", " }}
+            </div>
+            <div class="group-actions">
+                {% if user == chat_room.created_by %}
+                    <a href="{% url 'add_group_members' chat_room.id %}" class="btn btn-sm btn-primary">Add Members</a>
+                {% endif %}
+                <a href="{% url 'leave_group' chat_room.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Are you sure you want to leave this group?')">Leave Group</a>
+            </div>
+        </div>
+
+        <div class="messages" id="messages">
+            {% for message in messages %}
+                <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+                    <div class="message-sender">{{ message.sender.username }}</div>
+                    <div class="message-content">{{ message.content }}</div>
+                    <div class="message-time">{{ message.timestamp|date:"M d, Y H:i" }}</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" class="message-form">
+            {% csrf_token %}
+            {{ form.content }}
+            <button type="submit" class="send-button">Send</button>
+        </form>
+    </div>
+</body>
+</html>

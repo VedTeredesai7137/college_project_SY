@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile and PDF Upload</title>
+    <style>
+        :root {
+            --highlight-text: #EE4962;
+            --background: #f9f9f9;
+            --form-background: #ffffff;
+            --button-color: #1AB79D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-section {
+            width: 100%;
+            display: flex;
+            background-color: var(--form-background);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+            height: 100vh;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-picture img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--highlight-text);
+        }
+
+        .profile-info {
+            flex: 3;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .profile-info h2 {
+            color: var(--highlight-text);
+            margin-bottom: 10px;
+        }
+
+        .profile-info p {
+            margin-bottom: 5px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .pdf-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background: white;
+            margin-top: 10px;
+        }
+
+        .pdf-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .pdf-box:last-child {
+            border-bottom: none;
+        }
+
+        .pdf-box .btn {
+            margin-left: auto;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--form-background);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #138d74;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .profile-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="profile-section">
+    <div class="profile-picture">
+        <img src="https://via.placeholder.com/120" alt="Profile Picture">
+    </div>
+    <div class="profile-info">
+        <h2>User Profile</h2>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+
+    </div>
+</div>
+
+<div class="form-container">
+    <h2>Upload a PDF File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>File:</label>
+        {{ form.file }}
+        <label>Subject:</label>
+        {{ form.subject }}
+        <label>Name:</label>
+        {{ form.name }}
+        <label>Description:</label>
+        {{ form.description }}
+        <label>Day:</label>
+        {{ form.day_published }}
+        <label>Month:</label>
+        {{ form.month_published }}
+        <label>Year:</label>
+        {{ form.year_published }}
+        <button type="submit" class="submit-btn">Upload PDF</button>
+    </form>
+</div>
+</body>
+</html>
